@@ -32,6 +32,7 @@ app.get('/authors', (req, res)=>{
     })
 })
 
+
 app.get('/categories', (req, res)=>{
     const sql = "SELECT * FROM categories";
     db.query(sql, (err,data)=> {
