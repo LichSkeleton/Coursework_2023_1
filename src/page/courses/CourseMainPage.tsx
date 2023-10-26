@@ -10,43 +10,67 @@ interface Course {
   icon_url: string;
   is_free: boolean;
 }
+interface Author {
+  id: number;
+  fullname: string;
+}
 
 const CoursePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [authors, setAuthors] = useState<Author[]>([]);
 
   useEffect(() => {
-    // Fetch the course data from your API
-    axios.get('YOUR_API_URL_HERE')
-      .then((response) => {
-        // Assuming your API returns an array of courses
-        setCourses(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching courses:', error);
-      });
+    const fetchData = async () => {
+      try {
+        const [coursesResponse, authorsResponse] = await Promise.all([
+          axios.get('http://localhost:8081/courses'),
+          axios.get('http://localhost:8081/authors'),
+        ]);
+        setCourses(coursesResponse.data);
+        setAuthors(authorsResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
+  const getAuthorFullname = (authorId: number) => {
+    const author = authors.find((author) => author.id === authorId);
+    return author?.fullname;
+  };
+
+
   return (
-    <Container fluid className="d-flex justify-content-center">
-      <Row className="align-items-center">
-        {courses.map((course) => (
-          <Col key={course.id} xs={12} sm={6} md={4} lg={3} xl={2} className="flex-grow-1">
-            <Card className="mb-3">
-              <Card.Img
-                src={course.icon_url}
-                alt={course.name}
-                className="img-fluid"
-                style={{ height: 200 }}
-              />
-              <Card.Body>
-                <Card.Title>{course.name}</Card.Title>
-                <Card.Text>{course.description}</Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-    </Container>
+    <>
+      <Container fluid className="d-flex justify-content-center">
+        <Row className="align-items-center">
+          {courses.map((course) => {
+            const authorFullname = getAuthorFullname(course.author_id);
+
+            return (
+              <Col key={course.id} sm={12} md={4} lg={3} xl={2} className="flex-grow-1">
+                <Card className="mb-3">
+                  <Card.Img
+                    src={course.icon_url}
+                    alt={course.name}
+                    className="img-fluid"
+                    style={{ height: 200 }}
+                  />
+                  <Card.Body>
+                    <Card.Title>{course.name}</Card.Title>
+                    <Card.Text>
+                      <i className="bi bi-camera-video"></i> {authorFullname}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      </Container>
+    </>
   );
 };
 

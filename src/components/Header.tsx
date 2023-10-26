@@ -9,7 +9,6 @@ import SignUpPage from '../page/SignUp/SignUpPage';
 const Header: React.FC = () => {
   return (
     <>
-      {/* <Navbar fixed='top' collapseOnSelect expand="md" bg="dark" variant="dark"> */}
       <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
         <Container>
           <Navbar.Brand href='/'>
@@ -30,14 +29,6 @@ const Header: React.FC = () => {
           <Nav className="d-flex justify-content-end">
               <Nav.Link href='/signin'>Sign In</Nav.Link>
           </Nav>
-          {/* <Form className="d-flex justify-content-end">
-            <FormControl
-              type='text'
-              placeholder='Search'
-              className='mr-sm-2'
-            />
-            <Button variant='outline-info'>Search</Button>
-          </Form> */}
         </Container>
       </Navbar>
 
