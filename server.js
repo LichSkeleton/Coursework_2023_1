@@ -19,7 +19,10 @@ app.get('/', (req, res)=> {
 app.get('/courses', (req, res)=>{
     const sql = "SELECT * FROM courses";
     db.query(sql, (err,data)=> {
-        if(err) return res.json(err);
+        if(err) {
+            console.error(err); // Log the error to the server console
+            return res.status(500).json({ error: "Internal server error" }); // Return an error response
+        }
         return res.json(data);
     })
 })
@@ -27,7 +30,10 @@ app.get('/courses', (req, res)=>{
 app.get('/authors', (req, res)=>{
     const sql = "SELECT * FROM authors";
     db.query(sql, (err,data)=> {
-        if(err) return res.json(err);
+        if(err) {
+            console.error(err); // Log the error to the server console
+            return res.status(500).json({ error: "Internal server error" }); // Return an error response
+        }
         return res.json(data);
     })
 })
@@ -36,7 +42,21 @@ app.get('/authors', (req, res)=>{
 app.get('/categories', (req, res)=>{
     const sql = "SELECT * FROM categories";
     db.query(sql, (err,data)=> {
-        if(err) return res.json(err);
+        if(err) {
+            console.error(err); // Log the error to the server console
+            return res.status(500).json({ error: "Internal server error" }); // Return an error response
+        }
+        return res.json(data);
+    })
+})
+
+app.get('/courses_categories', (req, res)=>{
+    const sql = "SELECT * FROM courses_categories";
+    db.query(sql, (err,data)=> {
+        if(err) {
+            console.error(err); // Log the error to the server console
+            return res.status(500).json({ error: "Internal server error" }); // Return an error response
+        }
         return res.json(data);
     })
 })
