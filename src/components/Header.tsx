@@ -9,7 +9,7 @@ import SignUpPage from '../page/SignUp/SignUpPage';
 const Header: React.FC = () => {
   return (
     <>
-      <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
+      <Navbar className='d-flex flex-column flex-grow-0' collapseOnSelect expand="md" bg="dark" variant="dark">
         <Container>
           <Navbar.Brand href='/'>
             <img

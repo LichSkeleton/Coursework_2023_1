@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
 import axios from 'axios';
 
 interface Course {
@@ -10,24 +10,33 @@ interface Course {
   icon_url: string;
   is_free: boolean;
 }
+
 interface Author {
   id: number;
   fullname: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 const CoursePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [coursesResponse, authorsResponse] = await Promise.all([
+        const [coursesResponse, authorsResponse, categoriesResponse] = await Promise.all([
           axios.get('http://localhost:8081/courses'),
           axios.get('http://localhost:8081/authors'),
+          axios.get('http://localhost:8081/categories'),
         ]);
         setCourses(coursesResponse.data);
         setAuthors(authorsResponse.data);
+        setCategories(categoriesResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -41,36 +50,75 @@ const CoursePage = () => {
     return author?.fullname;
   };
 
+  const renderCourses = () => {
+    if (courses.length === 0) {
+      return <p>No courses available.</p>;
+    }
 
-  return (
-    <>
-      <Container fluid className="d-flex justify-content-center">
-        <Row className="align-items-center">
-          {courses.map((course) => {
-            const authorFullname = getAuthorFullname(course.author_id);
+    // Filter the courses where is_free is true
+    const freeCourses = courses.filter((course) => course.is_free);
 
+    if (freeCourses.length === 0) {
+      return <p>No free courses available.</p>;
+    }
+
+    const renderedCourses = [];
+
+    for (let i = 0; i < freeCourses.length; i += 3) {
+      renderedCourses.push(freeCourses.slice(i, i + 3));
+    }
+
+    return (
+      <Row className="d-flex justify-content-around m-5">
+        {renderedCourses.map((courseGroup) => {
+          return (
+            <div key={courseGroup[0].id} className="row mb-3 justify-content-center">
+              {courseGroup.map((course) => {
+                const authorFullname = getAuthorFullname(course.author_id);
+
+                return (
+                  <Col key={course.id} className="col-sm-6 col-md-4 col-lg-3">
+                    <Card>
+                      <CardImg src={course.icon_url} alt={course.name} className="img-fluid" style={{ width: '100%', height: 150 }} />
+                      <CardBody>
+                        <CardTitle>{course.name}</CardTitle>
+                        <CardText>
+                          <i className="bi bi-camera-video"></i> {authorFullname}
+                        </CardText>
+                      </CardBody>
+                    </Card>
+                  </Col>
+                );
+              })}
+            </div>
+          );
+        })}
+      </Row>
+    );
+  };
+
+
+  const renderCategories = () => {
+    return (
+      <Col sm={4} md={3} lg={2} xl={1} className='m-5'>
+        <ListGroup className="mt-3">
+          {categories.map((category) => {
             return (
-              <Col key={course.id} sm={12} md={4} lg={3} xl={2} className="flex-grow-1">
-                <Card className="mb-3">
-                  <Card.Img
-                    src={course.icon_url}
-                    alt={course.name}
-                    className="img-fluid"
-                    style={{ height: 200 }}
-                  />
-                  <Card.Body>
-                    <Card.Title>{course.name}</Card.Title>
-                    <Card.Text>
-                      <i className="bi bi-camera-video"></i> {authorFullname}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
+              <ListGroupItem key={category.id}>
+                {category.name}
+              </ListGroupItem>
             );
           })}
-        </Row>
-      </Container>
-    </>
+        </ListGroup>
+      </Col>
+    );
+  };
+
+  return (
+    <Container fluid className="d-flex flex-grow-1">
+        {renderCourses()}
+        {renderCategories()}
+    </Container>
   );
 };
 
