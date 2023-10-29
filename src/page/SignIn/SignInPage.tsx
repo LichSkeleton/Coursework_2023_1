@@ -4,7 +4,7 @@ import { Container, Form, Button } from 'react-bootstrap';
 const SignInPage: React.FC = () => {
   return (
     <>
-      <Container className="my-3">
+      <Container className="my-5">
         <h1>Sign In</h1>
         <Form>
           <Form.Group className="my-3">

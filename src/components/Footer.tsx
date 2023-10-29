@@ -5,8 +5,8 @@ import FeedbackForm from './FeedbackForm';
 
 const Footer: React.FC = () => {
   return (
-    <Container fluid className="d-flex flex-column flex-grow-0 bg-dark text-white ">
-      <Row className="pt-3 pb-3">
+    <Container fluid className="d-flex flex-column flex-grow-0 bg-dark text-white mt-5">
+      <Row className="pt-3 pb-3 m-5">
         <Col sm={12} md={6} lg={4}>
           <h3>Our company</h3>
           <p>
@@ -49,7 +49,7 @@ const Footer: React.FC = () => {
           <FeedbackForm />
         </Col>
       </Row>
-      <Row className="text-center">
+      <Row className="text-center m-4">
         <Col sm={12}>
           <p className="mb-0">Copyright &copy; 2023 Example Domain</p>
         </Col>
