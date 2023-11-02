@@ -1,0 +1,102 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AuthorsServise, CoursesServise, CoursesVideosServise } from '../../services/server_conn';
+import { Button, Card, Col, Container, Nav, Tab } from 'react-bootstrap';
+import CourseVideoTab from './CourseVideoTab'; 
+
+interface Course {
+  id: number;
+  author_id: number;
+  name: string;
+  description: string;
+  icon_url: string;
+  resource_url: string;
+  is_free: boolean;
+}
+
+interface CourseVideos {
+  id: number;
+  course_id: number;
+  name: string;
+  short_description: string;
+  resource_video_url: string;
+}
+
+interface Author {
+  id: number;
+  fullname: string;
+  photo_url: string;
+}
+
+const CourseSingle = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [course, setCourses] = useState<Course>();
+  const [author, setAuthor] = useState<Author>();
+  const [courseVideos, setCourseVideos] = useState<CourseVideos[]>([]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchData = async () => {
+      try {
+        const dataCourse = await CoursesServise.getById(id);
+        setCourses(dataCourse)
+
+        const dataAuthor = await AuthorsServise.getById(dataCourse.author_id);
+        setAuthor(dataAuthor);
+
+        const dataCourseVideos = await CoursesVideosServise.getAllById(id);
+        setCourseVideos(dataCourseVideos);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (!course?.name) return <div style={{ width: '100%', textAlign: 'center' }}><h1>Loading....</h1></div>;
+  if (course?.is_free == false) navigate('/', { replace: true });
+
+  return (
+    <Container>
+      <div className="d-flex flex-row align-items-center justify-content-center m-5">
+        <Col xs={6} className="d-flex justify-content-center align-items-center">
+          <Card.Img src={course.icon_url} alt={course.name} style={{ height: '300px', width: '500px' }} />
+        </Col>
+        <Col xs={6} className="d-flex flex-column justify-content-center align-items-center">
+          <h2 className='float-center'>Автор:</h2>
+          <div style={{
+            backgroundImage: `url(${author?.photo_url})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center center',
+            height: '250px',
+            width: '250px',
+          }} />
+          <div className='float-center'>{author?.fullname}</div>
+        </Col>
+      </div>
+      <Card>
+        <Card.Body>
+          <Card.Title>{course.name}</Card.Title>
+          <Card.Text>{course.description}</Card.Text>
+          {/* <div className="course-video-boxes">
+            {courseVideos?.map((courseVideo) => (
+              <CourseVideoBox
+                key={courseVideo.id}
+                courseVideo={courseVideo}
+                animationState={videoPlayerAnimationState}
+              />
+            ))}
+          </div> */}
+          <CourseVideoTab courseVideos={courseVideos || []} /> {/* Pass the courseVideos to the new component */}
+          <a href={course.resource_url} className='btn btn-primary text-end' target="_blank">Download Files</a>
+        </Card.Body>
+      </Card>
+    </Container >
+  );
+};
+
+export default CourseSingle;

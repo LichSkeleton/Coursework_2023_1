@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, CardBody, CardImg, CardText, CardTitle, Col, Container, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
-import axios from 'axios';
+import { AuthorsServise, CategoriesServise, CoursesCategoriesServise, CoursesServise } from '../../services/server_conn';
+import { Link, Route, useNavigate } from 'react-router-dom';
+import CourseSingle from './CourseSingle';
 
 interface Course {
   id: number;
@@ -8,6 +10,7 @@ interface Course {
   name: string;
   description: string;
   icon_url: string;
+  resource_url: string;
   is_free: boolean;
 }
 
@@ -27,6 +30,17 @@ interface CourseCategory {
 }
 
 const CoursePage = () => {
+
+  // const handleCourseClick = (course: Course) => {
+  //   <Route path="/course/:id" element={<CourseSingle course={course} />} />
+  // };
+  const navigate = useNavigate();
+
+  const handleCourseClick = (course: Course) => {
+    navigate(`/course/${course.id}`);
+    // <Route path="/course/:id" element={<CourseSingle course={course} />} />
+  };
+
   const [courses, setCourses] = useState<Course[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -36,16 +50,14 @@ const CoursePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [coursesResponse, authorsResponse, categoriesResponse, courseCategoriesResponse] = await Promise.all([
-          axios.get('http://localhost:8081/courses'),
-          axios.get('http://localhost:8081/authors'),
-          axios.get('http://localhost:8081/categories'),
-          axios.get('http://localhost:8081/courses_categories'),
-        ]);
-        setCourses(coursesResponse.data);
-        setAuthors(authorsResponse.data);
-        setCategories(categoriesResponse.data);
-        setCourseCategories(courseCategoriesResponse.data);
+        const coursesResponse = await CoursesServise.getAll();
+        setCourses(coursesResponse);
+        const authorsResponse = await AuthorsServise.getAll();
+        setAuthors(authorsResponse);
+        const categoriesResponse = await CategoriesServise.getAll();
+        setCategories(categoriesResponse);
+        const courseCategoriesResponse = await CoursesCategoriesServise.getAll();
+        setCourseCategories(courseCategoriesResponse);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -53,43 +65,29 @@ const CoursePage = () => {
 
     fetchData();
   }, []);
-
   const getAuthorFullname = (authorId: number) => {
     const author = authors.find((author) => author.id === authorId);
     return author?.fullname;
   };
-
   const handleCategorySelection = (categoryId: number) => {
     setSelectedCategory(categoryId);
   };
-
   const showAllPosts = () => {
     setSelectedCategory(null);
   };
-
   const renderCourses = () => {
     if (courses.length === 0) {
       return <p>No courses available.</p>;
     }
-
-    // console.log('Selected Category:', selectedCategory);
-
     const freeCourses = courses.filter((course) => course.is_free);
-    // console.log(freeCourses);
     let filteredCourses: Course[] = freeCourses;
-
     if (selectedCategory) {
       // Filter courseCategories based on the selected category
       const filteredCourseCategories = courseCategories.filter((courseCategory) => courseCategory.category_id === selectedCategory);
-    
       // Extract the course_ids from the filteredCourseCategories
       const selectedCourseIds = filteredCourseCategories.map((courseCategory) => courseCategory.course_id);
-    
       // Filter courses to only include those with ids in selectedCourseIds
       filteredCourses = freeCourses.filter((course) => selectedCourseIds.includes(course.id));
-    
-      // console.log('Filtered Course Categories:', filteredCourseCategories);
-      // console.log('Selected Course Ids:', selectedCourseIds);
     }
 
     if (filteredCourses.length === 0) {
@@ -112,14 +110,20 @@ const CoursePage = () => {
 
                 return (
                   <Col key={course.id} className="col-md-12 col-lg-6 col-xl-3">
+                    {/* <Card course={course} onClick={() => handleCourseClick(course)}> */}
+                    {/* <Card onClick={() => handleCourseClick(course)}> */}
                     <Card>
-                      <CardImg src={course.icon_url} alt={course.name} className="img-fluid" style={{ width: '100%', height: 150 }} />
+                      <CardImg src={course.icon_url} alt={course.name} className="img-fluid" style={{ width: '100%', height: '200px' }} />
                       <CardBody>
                         <CardTitle>{course.name}</CardTitle>
                         <CardText>
                           <i className="bi bi-camera-video"></i> {authorFullname}
                         </CardText>
                       </CardBody>
+                      <div className='text-center'>
+                      <Link to={{pathname: `/course/${course.id}`}}>Показати все</Link>
+                      {/* <Link to={`/course/${course.id}`}>Показати все</Link> */}
+                    </div>
                     </Card>
                   </Col>
                 );

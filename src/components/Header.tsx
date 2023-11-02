@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import logo from './logo.png';
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import Home from '../page/courses/CourseMainPage';
-import SignInPage from '../page/SignIn/SignInPage';
-import SignUpPage from '../page/SignUp/SignUpPage';
 
 const Header: React.FC = () => {
   return (
@@ -13,7 +9,7 @@ const Header: React.FC = () => {
         <Container>
           <Navbar.Brand href='/'>
             <img
-              src= {logo}
+              src={logo}
               height="40"
               width="70"
               className='d-inline-block align-top'
@@ -25,20 +21,12 @@ const Header: React.FC = () => {
               <Nav.Link href='/'>Home</Nav.Link>
               <Nav.Link href='/about'>About us</Nav.Link>
             </Nav>
+            <Nav className='ms-auto'>
+              <Nav.Link href='/signin' className="justify-content-end">Sign In</Nav.Link>
+            </Nav>
           </Navbar.Collapse>
-          <Nav className="d-flex justify-content-end">
-              <Nav.Link href='/signin'>Sign In</Nav.Link>
-          </Nav>
         </Container>
       </Navbar>
-
-      <Router>
-        <Routes>
-          <Route path="/" Component={Home} />
-          <Route path="/signin" Component={SignInPage} />
-          <Route path="/signup" Component={SignUpPage} />
-        </Routes>
-      </Router>
     </>
   );
 };
