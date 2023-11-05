@@ -18,7 +18,6 @@ interface CourseVideos {
   id: number;
   course_id: number;
   name: string;
-  short_description: string;
   resource_video_url: string;
 }
 
@@ -60,7 +59,7 @@ const CourseSingle = () => {
   if (course?.is_free == false) navigate('/', { replace: true });
 
   return (
-    <Container>
+    <Container className='border p-3'>
       <div className="d-flex flex-row align-items-center justify-content-center m-5">
         <Col xs={6} className="d-flex justify-content-center align-items-center">
           <Card.Img src={course.icon_url} alt={course.name} style={{ height: '300px', width: '500px' }} />
@@ -82,16 +81,7 @@ const CourseSingle = () => {
         <Card.Body>
           <Card.Title>{course.name}</Card.Title>
           <Card.Text>{course.description}</Card.Text>
-          {/* <div className="course-video-boxes">
-            {courseVideos?.map((courseVideo) => (
-              <CourseVideoBox
-                key={courseVideo.id}
-                courseVideo={courseVideo}
-                animationState={videoPlayerAnimationState}
-              />
-            ))}
-          </div> */}
-          <CourseVideoTab courseVideos={courseVideos || []} /> {/* Pass the courseVideos to the new component */}
+          <CourseVideoTab courseVideos={courseVideos || []} />
           <a href={course.resource_url} className='btn btn-primary text-end' target="_blank">Download Files</a>
         </Card.Body>
       </Card>

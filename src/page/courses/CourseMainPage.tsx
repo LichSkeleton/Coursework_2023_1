@@ -136,11 +136,15 @@ const CoursePage = () => {
   };
 
   const renderCategories = () => {
+    const sortedCategories = [...categories].sort((a, b) => a.name.localeCompare(b.name));
+  
     return (
       <Col sm={4} md={3} lg={2} xl={1} className="m-5">
-        <Button onClick={showAllPosts} className="mb-3">All</Button>
+        <Button onClick={showAllPosts} className="mb-3">
+          All
+        </Button>
         <ListGroup>
-          {categories.map((category) => {
+          {sortedCategories.map((category) => {
             return (
               <ListGroupItem
                 key={category.id}

@@ -45,3 +45,13 @@ export const CoursesCategoriesServise = {
     }
 };
 
+export const PackagesServise = {
+    async getAll() {
+        const response = await axios.get('http://localhost:8081/packages')
+        return response.data;
+    },
+    async getById(id){
+        const response = await axios.get(`http://localhost:8081/packages?id=${id}`)
+        return response.data;
+    }
+};
