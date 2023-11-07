@@ -22,10 +22,8 @@ const SignUpPage: React.FC = () => {
                     <Button variant="primary" type="submit" className="my-3">
                         Sign Up
                     </Button>
-                    <Button href="/signin" variant="primary" className="float-end my-3">
-                        Sign In
-                    </Button>
                 </Form>
+                <Button href="/signin" style={{ width: "75%" }} variant="secondary" className="m-auto d-flex justify-content-center my-3">Sign In</Button>
             </Container>
         </>
     );
