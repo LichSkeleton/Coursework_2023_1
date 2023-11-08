@@ -15,7 +15,7 @@ const FeedbackForm: React.FC = () => {
     return (
         <form onSubmit={handleSubmit}>
             <div className="form-group">
-                <label htmlFor="feedback">Feedback:</label>
+                <label htmlFor="feedback">Відгук:</label>
                 <textarea
                     id="feedback"
                     className="form-control"
@@ -27,7 +27,7 @@ const FeedbackForm: React.FC = () => {
             </div>
             <div className="d-flex justify-content-end">
                 <button type="submit" className="btn btn-primary">
-                    Submit Feedback
+                    Відправити
                 </button>
             </div>
         </form>

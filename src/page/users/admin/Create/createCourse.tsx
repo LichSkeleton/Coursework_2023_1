@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Col } from 'react-bootstrap';
+import { Form, Button} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthorsServise, CategoriesServise } from '../../../../services/server_conn';
 import axios from 'axios';
@@ -137,46 +137,43 @@ const CreateCourse: React.FC = () => {
 
         // Check if all required fields are filled in
         if (course.name === '' || course.description === '' || course.icon_url === '' || course.resource_url === '') {
-            alert('Please fill in all fields');
+            alert('Заповніть всі поля');
             return;
         }
         const hasInvalidCourseVideo = courseVideos.some(video => !video.name || !video.resource_video_url);
         if (hasInvalidCourseVideo) {
-            alert('Please fill in all course video fields');
+            alert('Заповніть всі поля пов\'язані з відео до курсу');
             return;
         }
         // Check if the course name is less than 255 symbols
         if (course.name.length > 254) {
-            alert('Course name must be less than 255 symbols');
+            alert('Ім\'я курсу повино бути меньше 255 символів');
             return;
         }
         // Check if at least one category is selected
         if (!selectedCategories || selectedCategories.length === 0) {
-            alert('Please select at least one category');
+            alert('Виберіть хочаб 1 категорію');
             return;
         }
-
-        // console.log('New course data:', course);
-        // console.log('Course videos:', courseVideos);
-
         const data = {
             course: course,         // Your course object
             courseVideos: courseVideos  // Your array of course videos
         };
         try {
-            const [courseResponse, categoriesResponse] = await Promise.all([
-                axios.post('http://localhost:8081/createCourse', data),
-                axios.post('http://localhost:8081/CoursesCategories', { selectedCategories }),
-            ]);
-    
-            navigate('/admin/', { replace: true });
-        } catch (error) {
-            console.error('Error:', error);
+            const courseResponse = await axios.post('http://localhost:8081/createCourse', data);
+            // Check if the course was created successfully
+            if (courseResponse.status === 200) {
+                navigate('/admin/', { replace: true });
+            }
+        } catch (error: any) {
+            if (error.response && error.response.status === 400 && error.response.data.error === 'Course name already exists') {
+                alert('Це ім\'я курсу вже існує. Будь ласка, виберіть інше ім\'я.');
+            } else {
+                console.error('Помилка:', error);
+            }
         }
     
     };
-
-    // Function to handle author selection
 
     return (
         <>
@@ -185,7 +182,7 @@ const CreateCourse: React.FC = () => {
             </div>
             <Form className='p-5' onSubmit={handleSubmit}>
                 <Form.Group controlId="authorSelect">
-                    <Form.Label>Author name:</Form.Label>
+                    <Form.Label>Автор:</Form.Label>
                     <Form.Select
                         className="custom-select"
                         name='author_id'
@@ -200,7 +197,7 @@ const CreateCourse: React.FC = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>Course Name</Form.Label>
+                    <Form.Label>Ім'я курсу:</Form.Label>
                     <Form.Control
                         type="text"
                         name="name"
@@ -209,7 +206,7 @@ const CreateCourse: React.FC = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>Description</Form.Label>
+                    <Form.Label>Опис:</Form.Label>
                     <Form.Control
                         as="textarea"
                         name="description"
@@ -218,7 +215,7 @@ const CreateCourse: React.FC = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>Icon URL</Form.Label>
+                    <Form.Label>Іконка курсу:</Form.Label>
                     <Form.Control
                         type="text"
                         name="icon_url"
@@ -228,7 +225,7 @@ const CreateCourse: React.FC = () => {
 
                 {categories.length > 0 && (
                     <Form.Group className="mb-3">
-                        <Form.Label>Categories:</Form.Label>
+                        <Form.Label>Категорії:</Form.Label>
                         {categories.map((category) => (
                             <Form.Check
                                 key={category.id}
@@ -246,7 +243,7 @@ const CreateCourse: React.FC = () => {
                 {courseVideos.map((video, index) => (
                     <div>
                         <Form.Group className="mb-3">
-                            <Form.Label>Video {index + 1} Name</Form.Label>
+                            <Form.Label>Відео до курсу {index + 1} (Назва):</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="name"
@@ -255,7 +252,7 @@ const CreateCourse: React.FC = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Video {index + 1} URL</Form.Label>
+                            <Form.Label>Відео до курсу {index + 1} посилання на відео:</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="resource_video_url"
@@ -264,14 +261,13 @@ const CreateCourse: React.FC = () => {
                         </Form.Group>
                     </div>
                 ))}
-                {/* </Form.Group> */}
 
                 <div className='mb-5'>
-                    <Button onClick={handleAddCourseVideo} className="float-end">Add More Videos</Button>
+                    <Button onClick={handleAddCourseVideo} className="float-end">Додати ще відео до курсу</Button>
                 </div>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>Resource URL</Form.Label>
+                    <Form.Label>Посилання на матеріали до курсу:</Form.Label>
                     <Form.Control
                         type="text"
                         name="resource_url"
@@ -282,14 +278,14 @@ const CreateCourse: React.FC = () => {
                 <Form.Group className="mb-3">
                     <Form.Check
                         type="checkbox"
-                        label="Is Free"
+                        label="Безкоштовний?"
                         name="is_free"
                         onChange={handleInputChange}
                     />
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className='float-end'>
-                    Create Course
+                    Створити курс
                 </Button>
             </Form>
         </>

@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import logo from './logo.png';
 import AuthService from './ui/AuthServise';
-import useTokenCheck from './ui/ProtectedRoute';
 import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
@@ -32,21 +31,21 @@ const Header: React.FC = () => {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className='mr-auto'>
-              <Nav.Link href='/'>Home</Nav.Link>
-              <Nav.Link href='/about'>About us</Nav.Link>
+              <Nav.Link href='/'>Головна</Nav.Link>
+              <Nav.Link href='/about'>Про нас</Nav.Link>
               {jwtToken && (
                 isAdmin ? (
-                  <Nav.Link href='/admin'>Admin Panel</Nav.Link>
+                  <Nav.Link href='/admin'>Адміністративна панель</Nav.Link>
                 ) : (
-                  <Nav.Link href='/dashboard'>Dashboard</Nav.Link>
+                  <Nav.Link href='/dashboard'>Користувацька панель</Nav.Link>
                 )
               )}
             </Nav>
             <Nav className='ms-auto'>
               {jwtToken ? (
-                <Nav.Link onClick={handleLogout}>Sign Out</Nav.Link>
+                <Nav.Link onClick={handleLogout}>Вийти</Nav.Link>
               ) : (
-                <Nav.Link href='/signin'>Sign In</Nav.Link>
+                <Nav.Link href='/signin'>Увійти</Nav.Link>
               )}
             </Nav>
           </Navbar.Collapse>

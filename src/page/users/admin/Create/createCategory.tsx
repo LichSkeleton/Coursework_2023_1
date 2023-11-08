@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Col } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Form, Button} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthorsServise, CategoriesServise } from '../../../../services/server_conn';
 import axios from 'axios';
 import useTokenCheck from '../../../../components/ui/ProtectedRoute';
 
@@ -30,12 +29,12 @@ const CreateCategory: React.FC = () => {
 
         // Check if all required fields are filled in
         if (category.name === '') {
-            alert('Please fill in all fields');
+            alert('Будь ласка заповніть всі поля');
             return;
         }
         // Check if the author name is less than 255 symbols
         if (category.name.length > 49) {
-            alert('Course name must be less than 50 symbols');
+            alert('Назва категорії повинамістити не більше 50 символів');
             return;
         }
 
@@ -43,19 +42,16 @@ const CreateCategory: React.FC = () => {
             const [authorResponse] = await Promise.all([
                 axios.post('http://localhost:8081/CreateCategory', category),
             ]);
-            console.log(authorResponse);
             navigate('/admin/', { replace: true });
         } catch (error: any) { // Specify 'error' as any type
             console.error('Error:', error);
             if (axios.isAxiosError(error) && error.response && error.response.status === 400) {
                 // Handle the 400 Bad Request error (duplicate entry)
-                alert('A category with the same name already exists.');
+                alert('Категорія з таким ім\'ям вже існує.');
             }
         }
 
     };
-
-    // Function to handle author selection
 
     return (
         <>
@@ -64,7 +60,7 @@ const CreateCategory: React.FC = () => {
             </div>
             <Form className='m-5 p-5' onSubmit={handleSubmit}>
                 <Form.Group controlId="authorSelect">
-                    <Form.Label>Category name:</Form.Label>
+                    <Form.Label>Назва категорії:</Form.Label>
                     <Form.Control
                         type="text"
                         name="name"
@@ -72,7 +68,7 @@ const CreateCategory: React.FC = () => {
                     />
                 </Form.Group>
                 <Button variant="primary" type="submit" className='float-end mt-4'>
-                    Create Category
+                    Створити Категорію
                 </Button>
             </Form>
         </>

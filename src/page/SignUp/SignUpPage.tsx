@@ -39,31 +39,31 @@ const SignUpPage: React.FC = () => {
     return (
         <>
             <Container>
-                <h1 className="my-3">Sign Up</h1>
+                <h1 className="my-3">Реєстрація</h1>
                 <Form>
                     <Form.Group className="my-3">
-                        <Form.Label>Full name</Form.Label>
+                        <Form.Label>Повне ім'я</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Enter your full name"
+                            placeholder="Введіть ваше повне ім'я"
                             value={fullname}
                             onChange={(e) => setFullName(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="my-3">
-                        <Form.Label>Email address</Form.Label>
+                        <Form.Label>Пошта</Form.Label>
                         <Form.Control
                             type="email"
-                            placeholder="Enter your email address"
+                            placeholder="Введіть вашу електрону пошту"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="my-3">
-                        <Form.Label>Password</Form.Label>
+                        <Form.Label>Пароль</Form.Label>
                         <Form.Control
                             type="password"
-                            placeholder="Enter your password"
+                            placeholder="Введіть пароль"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
@@ -74,10 +74,7 @@ const SignUpPage: React.FC = () => {
                         className="my-3"
                         onClick={handleRegistration}
                     >
-                        Sign Up
-                    </Button>
-                    <Button href="/signin" variant="primary" className="float-end my-3">
-                        Sign In
+                        Зареєструватися
                     </Button>
                 </Form>
             </Container>

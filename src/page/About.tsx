@@ -6,12 +6,12 @@ const AboutUs: React.FC = () => {
         <Container className="my-5">
             <Row>
                 <Col>
-                    <h1>About Us</h1>
-                    <p>Welcome to IT Courses Hub, your premier destination for high-quality IT courses and professional training. We're dedicated to helping you thrive in the ever-evolving world of technology.</p>
-                    <p>At IT Courses Hub, our passion for technology and education drives us to provide you with the knowledge and skills necessary to succeed in the fast-paced field of information technology. We understand that staying up-to-date and relevant in the tech industry is crucial, and we're here to support your journey.</p>
-                    <p>Our mission is simple: to offer affordable, accessible, and top-notch IT courses that empower you to launch your career or stay at the forefront of technological advancements. Whether you're a seasoned professional looking to expand your skill set or a beginner eager to explore the world of IT, IT Courses Hub is here to help you achieve your goals.</p>
-                    <p>Our diverse range of courses covers a wide spectrum of IT specialties, from programming and web development to cybersecurity and data science. Our instructors are industry experts who are passionate about sharing their knowledge and helping you succeed. We offer both self-paced courses and live online classes, ensuring flexibility in your learning experience.</p>
-                    <p>At IT Courses Hub, we value your growth and are committed to providing a platform that equips you with the tools you need to reach new heights in your career. Join us on this journey, and together, we'll build a brighter future in the world of technology.</p>
+                    <h1>Про нас</h1>
+                    <p>Ласкаво просимо до IT Courses Hub, вашого провідного напрямку високоякісних IT-курсів та професійної підготовки. Ми присвячені допомозі вам процвітати в постійно змінному світі технологій.</p>
+                    <p>У IT Courses Hub наша пристрасть до технологій та освіти підштовхує нас надавати вам знання та навички, необхідні для успіху в швидкому світі інформаційних технологій. Ми розуміємо, що залишатися в курсі та бути актуальними в галузі технологій критично важливо, і ми тут, щоб підтримати вашу подорож.</p>
+                    <p>Наша місія проста: надавати доступні, доступні та високоякісні IT-курси, які надають вам можливість розпочати кар'єру або залишатися на передньому краї технологічних досягнень. Незалежно від того, чи є ви досвідченим фахівцем, який бажає розширити свій набір навичок, чи початківцем, який бажає дослідити світ ІТ, IT Courses Hub тут, щоб допомогти вам досягти ваших цілей.</p>
+                    <p>Наш широкий спектр курсів охоплює великий спектр спеціалізацій в галузі ІТ, від програмування та веб-розробки до кібербезпеки та науки про дані. Наші викладачі - це висококваліфіковані фахівці, які пасіоновані в обміні своїми знаннями та допомогти вам досягти успіху. Ми пропонуємо як самостійні курси, так і живі онлайн-заняття, що забезпечує гнучкість в вашому процесі навчання.</p>
+                    <p>У IT Courses Hub ми цінуємо ваш зріст і зобов'язані надавати платформу, що забезпечує вас інструментами, необхідними для досягнення нових висот в вашій кар'єрі. Приєднуйтесь до нас в цій подорожі, і разом ми побудуємо яскраве майбутнє в світі технологій.</p>
                 </Col>
             </Row>
         </Container>

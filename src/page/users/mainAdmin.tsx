@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Col, Container, Nav, Row, Tab, TabContent } from 'react-bootstrap';
+import { Col, Container, Nav, Row, Tab, TabContent } from 'react-bootstrap';
 import { AuthorsServise, CategoriesServise, CoursesServise, PackagesServise } from '../../services/server_conn';
 import axios from 'axios';
 import useTokenCheck from '../../components/ui/ProtectedRoute';
@@ -71,7 +71,6 @@ const MainAdmins: React.FC = () => {
                 const [delResponse] = await Promise.all([
                     axios.delete(`http://localhost:8081/deleteCourse/${courseId}`),
                 ]);
-                // console.log(delResponse);
                 window.location.reload();
             } catch (error: any) { // Specify 'error' as any type
                 console.error('Error:', error);
@@ -86,7 +85,6 @@ const MainAdmins: React.FC = () => {
                 const [delResponse] = await Promise.all([
                     axios.delete(`http://localhost:8081/deletePackage/${packageId}`),
                 ]);
-                // console.log(delResponse);
                 window.location.reload();
             } catch (error: any) { // Specify 'error' as any type
                 console.error('Error:', error);
@@ -101,7 +99,6 @@ const MainAdmins: React.FC = () => {
                 const [delResponse] = await Promise.all([
                     axios.delete(`http://localhost:8081/deleteAuthor/${authorId}`),
                 ]);
-                // console.log(delResponse);
                 window.location.reload();
             } catch (error: any) { // Specify 'error' as any type
                 console.error('Error:', error);
@@ -116,7 +113,6 @@ const MainAdmins: React.FC = () => {
                 const [delResponse] = await Promise.all([
                     axios.delete(`http://localhost:8081/deleteCategory/${categoryId}`),
                 ]);
-                // console.log(delResponse);
                 window.location.reload();
             } catch (error: any) { // Specify 'error' as any type
                 console.error('Error:', error);

@@ -20,7 +20,7 @@ export const handleLogin = async (email: string, password: string) => {
         if(AuthServise.getJwtTokenRole(jwtToken)) {window.location.href = '/admin';}
         else {window.location.href = '/dashboard';}
       } else {
-        alert('Email or pasword was wrong!');
+        alert('Пошта або пароль введений не вірно.');
         console.error('Login failed');
       }
     } catch (error) {

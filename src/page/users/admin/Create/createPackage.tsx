@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Col } from 'react-bootstrap';
+import React, { useState} from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthorsServise, CategoriesServise } from '../../../../services/server_conn';
 import axios from 'axios';
 import useTokenCheck from '../../../../components/ui/ProtectedRoute';
 
@@ -47,27 +46,27 @@ const CreatePackage: React.FC = () => {
 
         // Check if all required fields are filled in
         if (mypackage.name === '' || mypackage.price.toString() === '' || mypackage.months_available.toString() === '') {
-            alert('Please fill in all fields');
+            alert('Заповінть всі поля будь ласка');
             return;
         }
         // Check if the package name is less than 255 symbols
-        if (mypackage.price <0 || mypackage.months_available < 0) {
-            alert('mypackage.price <0 || mypackage.months_available < 0 - it`s not good!');
+        if (mypackage.price <=0 || mypackage.months_available <= 0) {
+            alert('Ціна та кількість міцяців не повині бути меньше або дорівнювати 0');
             return;
         }
         if (typeof mypackage.price !== 'number' || !Number.isFinite(mypackage.price) || !Number.isInteger(mypackage.price)) {
-            alert('mypackage.price is not a float');
+            alert('Ціна повина бути дійсним числом');
             return;
         }
         
         if (typeof mypackage.months_available !== 'number' || !Number.isInteger(mypackage.months_available)) {
-            alert('mypackage.months_available is not an integer');
+            alert('Кількість місяців має бути числом');
             return;
         }
 
         // Check if the package name is less than 255 symbols
         if (mypackage.name.length > 254) {
-            alert('Course name must be less than 255 symbols');
+            alert('Ім\'я пакету повинно бути меньше 255 символів');
             return;
         }
 
@@ -75,20 +74,16 @@ const CreatePackage: React.FC = () => {
             const [mypackageResponse] = await Promise.all([
               axios.post('http://localhost:8081/CreatePackage', mypackage),
             ]);
-            // console.log(mypackageResponse);
             navigate('/admin/', { replace: true });
           } catch (error: any) { // Specify 'error' as any type
             console.error('Error:', error);
             if (axios.isAxiosError(error) && error.response && error.response.status === 400) {
               // Handle the 400 Bad Request error (duplicate entry)
-              alert('A package with the same name already exists.');
+              alert('Пакет з таким ім\'ям вже існує');
             }
           }
 
     };
-
-    // Function to handle author selection
-
     return (
         <>
             <div className='m-1'>
@@ -96,7 +91,7 @@ const CreatePackage: React.FC = () => {
             </div>
             <Form className='p-5' onSubmit={handleSubmit}>
                 <Form.Group>
-                    <Form.Label>Package name:</Form.Label>
+                    <Form.Label>Ім'я пакету:</Form.Label>
                     <Form.Control
                         type="text"
                         name="name"
@@ -105,7 +100,7 @@ const CreatePackage: React.FC = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>Price:</Form.Label>
+                    <Form.Label>Ціна:</Form.Label>
                     <Form.Control
                         type="text"
                         name="price"
@@ -114,7 +109,7 @@ const CreatePackage: React.FC = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>months_available:</Form.Label>
+                    <Form.Label>Кількість місяців доступу:</Form.Label>
                     <Form.Control
                         type="text"
                         name="months_available"
@@ -123,7 +118,7 @@ const CreatePackage: React.FC = () => {
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className='float-end'>
-                    Create Package
+                    Створити пакет
                 </Button>
             </Form>
         </>

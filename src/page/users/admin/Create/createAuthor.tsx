@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Col } from 'react-bootstrap';
+import React, { useState} from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthorsServise, CategoriesServise } from '../../../../services/server_conn';
 import axios from 'axios';
 import useTokenCheck from '../../../../components/ui/ProtectedRoute';
 
@@ -45,12 +44,12 @@ const CreateAuthor: React.FC = () => {
 
         // Check if all required fields are filled in
         if (author.fullname === '' || author.photo_url === '') {
-            alert('Please fill in all fields');
+            alert('Заповніть всі поля будь ласка');
             return;
         }
         // Check if the author name is less than 255 symbols
         if (author.fullname.length > 254) {
-            alert('Course name must be less than 255 symbols');
+            alert('Повне ім\'я автора повино бути меньше 255 символів');
             return;
         }
 
@@ -58,16 +57,12 @@ const CreateAuthor: React.FC = () => {
             const [authorResponse] = await Promise.all([
               axios.post('http://localhost:8081/CreateAuthor', author),
             ]);
-            console.log(authorResponse);
             navigate('/admin/', { replace: true });
           } catch (error: any) { // Specify 'error' as any type
             console.error('Error:', error);
           }
 
     };
-
-    // Function to handle author selection
-
     return (
         <>
             <div className='m-1'>
@@ -83,7 +78,7 @@ const CreateAuthor: React.FC = () => {
             }} />
             <Form className='p-5' onSubmit={handleSubmit}>
                 <Form.Group>
-                    <Form.Label>Author full name:</Form.Label>
+                    <Form.Label>Повне ім'я автора:</Form.Label>
                     <Form.Control
                         type="text"
                         name="fullname"
@@ -92,7 +87,7 @@ const CreateAuthor: React.FC = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>Photo url:</Form.Label>
+                    <Form.Label>Посилання на фото:</Form.Label>
                     <Form.Control
                         type="text"
                         name="photo_url"
@@ -101,7 +96,7 @@ const CreateAuthor: React.FC = () => {
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className='float-end'>
-                    Create Author
+                    Створити Автора
                 </Button>
             </Form>
         </>

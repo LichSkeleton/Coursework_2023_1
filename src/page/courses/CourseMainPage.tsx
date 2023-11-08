@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, CardBody, CardImg, CardText, CardTitle, Col, Container, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
 import { AuthorsServise, CategoriesServise, CoursesCategoriesServise, CoursesServise, UsersServise } from '../../services/server_conn';
-import { Link, Route, useNavigate } from 'react-router-dom';
-import CourseSingle from './CourseSingle';
+import { Link} from 'react-router-dom';
 import AuthServise from '../../components/ui/AuthServise';
 
 interface Course {
@@ -37,7 +36,7 @@ const CoursePage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [courseCategories, setCourseCategories] = useState<CourseCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [user,setUser] = useState<number | null>(null);
+  const [user, setUser] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,7 +50,6 @@ const CoursePage = () => {
         const courseCategoriesResponse = await CoursesCategoriesServise.getAll();
         setCourseCategories(courseCategoriesResponse);
         setUser(AuthServise.getActivePackage(AuthServise.getJwtToken()));
-        // console.log(AuthServise.getActivePackage(AuthServise.getJwtToken()));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -72,18 +70,12 @@ const CoursePage = () => {
   };
   const renderCourses = () => {
     if (courses.length === 0) {
-      return <p>No courses available.</p>;
+      return <p>Немає доступних курсів.</p>;
     }
 
     const freeCourses = courses.filter((course) => course.is_free);
-    // let filteredCourses: Course[];
-    // if(user!==null){
-    //   filteredCourses = courses;
-    // }else{
-    //   filteredCourses=freeCourses;
-    // }
     let filteredCourses: Course[] = user ? courses : freeCourses;
-    
+
     if (selectedCategory) {
       // Filter courseCategories based on the selected category
       const filteredCourseCategories = courseCategories.filter((courseCategory) => courseCategory.category_id === selectedCategory);
@@ -92,13 +84,13 @@ const CoursePage = () => {
       // Filter courses to only include those with ids in selectedCourseIds
       filteredCourses = filteredCourses.filter((course) => selectedCourseIds.includes(course.id));
     }
-    
+
     if (filteredCourses.length === 0) {
-      return <div className='d-flex flex-grow-1 justify-content-center m-5'><div className="row mb-6 justify-content-center m-5"><h1 className='m-5'>No courses available for the selected category.</h1></div></div>
+      return <div className='d-flex flex-grow-1 justify-content-center m-5'><div className="row mb-6 justify-content-center m-5"><h1 className='m-5'>Немає доступного курсу з даною категорією.</h1></div></div>
     }
-    
+
     const renderedCourses = [];
-    
+
     for (let i = 0; i < filteredCourses.length; i += 3) {
       renderedCourses.push(filteredCourses.slice(i, i + 3));
     }
@@ -112,10 +104,8 @@ const CoursePage = () => {
                 const authorFullname = getAuthorFullname(course.author_id);
 
                 return (
-                  <Col key={course.id} className="col-md-12 col-lg-6 col-xl-3">
-                    {/* <Card course={course} onClick={() => handleCourseClick(course)}> */}
-                    {/* <Card onClick={() => handleCourseClick(course)}> */}
-                    <Card>
+                  <Col key={course.id} className="col-md-12 col-lg-6 col-xl-3 h-100">
+                    <Card style={{ height: '100%' }}>
                       <CardImg src={course.icon_url} alt={course.name} className="img-fluid" style={{ width: '100%', height: '200px' }} />
                       <CardBody>
                         <CardTitle>{course.name}</CardTitle>
@@ -124,9 +114,8 @@ const CoursePage = () => {
                         </CardText>
                       </CardBody>
                       <div className='text-center'>
-                      <Link to={{pathname: `/course/${course.id}`}}>Показати все</Link>
-                      {/* <Link to={`/course/${course.id}`}>Показати все</Link> */}
-                    </div>
+                        <Link to={{ pathname: `/course/${course.id}` }} className="btn btn-primary mb-3">Показати все</Link>
+                      </div>
                     </Card>
                   </Col>
                 );
@@ -136,15 +125,15 @@ const CoursePage = () => {
         })}
       </Row>
     );
-  };
+  }
 
   const renderCategories = () => {
     const sortedCategories = [...categories].sort((a, b) => a.name.localeCompare(b.name));
-  
+
     return (
       <Col sm={4} md={3} lg={2} xl={1} className="m-5">
         <Button onClick={showAllPosts} className="mb-3">
-          All
+          Всі
         </Button>
         <ListGroup>
           {sortedCategories.map((category) => {

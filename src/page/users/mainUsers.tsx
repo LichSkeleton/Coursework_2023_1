@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PackagesServise, UsersServise } from '../../services/server_conn';
-import { Button, Col, Container, Nav, Row, Tab, TabContent } from 'react-bootstrap';
+import { Button, Col, Nav, Row, Tab, TabContent } from 'react-bootstrap';
 import AuthService from '../../components/ui/AuthServise'
-import { useNavigate } from 'react-router-dom';
 import useTokenCheck from '../../components/ui/ProtectedRoute';
 
 interface Package {
@@ -26,15 +25,11 @@ const MainUsers: React.FC = () => {
         async function fetchData() {
             try {
                 const email = AuthService.getEmail(AuthService.getJwtToken());
-
                 // Fetch user's data
                 const userData = await UsersServise.getByEmail(email);
-                // setUser(userData);
 
                 const user = userData[0];
-                // console.log(userData);
                 if (user .active_package_id !==null) {
-                    // console.log(user);
                     const packageResponse = await PackagesServise.getById(user.active_package_id);
                     setActivePackageName(packageResponse.name);
                     setActivePackageId(user.active_package_id);
@@ -56,7 +51,6 @@ const MainUsers: React.FC = () => {
     const handlePurchase = async (packageId: number) => {
         try {
             const response = await UsersServise.postPackageUser(AuthService.getEmail(AuthService.getJwtToken()), packageId);
-            console.log(response);
             const newJwtToken = response.accessToken;
 
             AuthService.logout();
@@ -69,8 +63,6 @@ const MainUsers: React.FC = () => {
         }
     };
 
-    // console.log(packages);
-
     return (
         <div className="w-100">
             <Tab.Container id="left-tabs-example" defaultActiveKey="navPackages">
@@ -78,7 +70,7 @@ const MainUsers: React.FC = () => {
                     <Col sm={2}>
                         <Nav variant="pills" className="flex-column mt-2">
                             <Nav.Item>
-                                <Nav.Link eventKey="navPackages">Packages</Nav.Link>
+                                <Nav.Link eventKey="navPackages">Пакети</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Col>
@@ -89,16 +81,16 @@ const MainUsers: React.FC = () => {
                                     <div className='mt-3'>
                                         <h4>"{activePackageName}" пакет</h4>
                                         {endDate ? (
-                                            <p>Active until: {new Date(endDate).toLocaleDateString()}</p>
+                                            <p>Доступний до: {new Date(endDate).toLocaleDateString()}</p>
                                         ) : null}
                                     </div>
                                 ) : (
                                     packages.map((mypackage) => (
-                                        <div key={mypackage.id}>
+                                        <div key={mypackage.id} className='mt-3'>
                                             <h4>{mypackage.name}</h4>
-                                            <p>Price: {mypackage.price} грн</p>
-                                            <p>Months Available: {mypackage.months_available} months</p>
-                                            <Button onClick={() => handlePurchase(mypackage.id)}>Buy</Button>
+                                            <p>Ціна: {mypackage.price} грн</p>
+                                            <p>Дуступний буде: {mypackage.months_available} місяців</p>
+                                            <Button onClick={() => handlePurchase(mypackage.id)}>Купити</Button>
                                             <hr />
                                         </div>
                                     ))

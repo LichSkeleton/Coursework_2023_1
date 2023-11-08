@@ -1,11 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import CourseMainPage from '../../page/courses/CourseMainPage';
 import CourseSingle from '../../page/courses/CourseSingle';
 import SignInPage from '../../page/SignIn/SignInPage';
 import SignUpPage from '../../page/SignUp/SignUpPage';
 import MainUsers from '../../page/users/mainUsers';
 import MainAdmins from '../../page/users/mainAdmin';
-import CourseManage from '../../page/users/admin/courseManage';
 import CreateCourse from '../../page/users/admin/Create/createCourse';
 import CreatePackage from '../../page/users/admin/Create/createPackage';
 import CreateAuthor from '../../page/users/admin/Create/createAuthor';
@@ -44,7 +43,7 @@ const Router = () => {
 
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
-                <Route path='*' element={<div className='d-flex flex-grow-1 justify-content-center m-5'><div className="row mb-6 justify-content-center m-5"><h1 className='m-5'>Not Found.</h1></div></div>} />
+                <Route path='*' element={<div className='d-flex flex-grow-1 justify-content-center m-5'><div className="row mb-6 justify-content-center m-5"><h1 className='m-5'>Не знайдено даної сторінки.</h1></div></div>} />
             </Routes>
     );
 }

@@ -2,21 +2,20 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import FeedbackForm from './FeedbackForm';
 
-
 const Footer: React.FC = () => {
   return (
     <Container fluid className="d-flex flex-column flex-grow-0 bg-dark text-white mt-5">
       <Row className="pt-3 pb-3 m-5">
         <Col sm={12} md={6} lg={4}>
-          <h3>Our company</h3>
+          <h3>Наша компанія</h3>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-            risus. Suspendisse lectus tortor, dignissim sit amet, auctor id,
-            feugiat vivamus, justo.
+            Славимось ми тим що навчили багатьох українців розвиватися в сфері ІТ,
+            якби Стів Джобс був би ще живий він залюбки купив підписку
+            на нашому сайті.
           </p>
         </Col>
         <Col sm={12} md={6} lg={4}>
-          <h3>Social media</h3>
+          <h3>Соціальні мережі</h3>
           <ul className="list-unstyled">
             <li>
               <a href="#" className="text-white">Facebook</a>
@@ -30,16 +29,16 @@ const Footer: React.FC = () => {
           </ul>
         </Col>
         <Col sm={12} md={12} lg={4}>
-          <h3>Contact us</h3>
+          <h3>Зв'яжіться з нами</h3>
           <ul className="list-unstyled">
             <li>
-              <p className="text-white">Email: info@example.com</p>
+              <p className="text-white">Пошта: info@example.com</p>
             </li>
             <li>
-              <p className="text-white">Phone: +1-555-555-5555</p>
+              <p className="text-white">Телефон: +1-555-555-5555</p>
             </li>
             <li>
-              <p className="text-white">Address: 123 Main Street, Anytown, CA 12345</p>
+              <p className="text-white">Адреса: Сториженцька 33</p>
             </li>
           </ul>
         </Col>
@@ -51,7 +50,7 @@ const Footer: React.FC = () => {
       </Row>
       <Row className="text-center m-4">
         <Col sm={12}>
-          <p className="mb-0">Copyright &copy; 2023 Example Domain</p>
+          <p className="mb-0">Авторське право &copy; 2023 Приклад Домену</p>
         </Col>
       </Row>
     </Container>

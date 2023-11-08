@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
-import AuthServise from '../../components/ui/AuthServise';
-import { UsersServise } from '../../services/server_conn';
 import { handleLogin } from '../SignCommon/Login';
 
 const SignInPage: React.FC = () => {
@@ -16,22 +14,22 @@ const SignInPage: React.FC = () => {
   return (
     <>
       <Container className="my-5">
-        <h1>Sign In</h1>
+        <h1>Вхід</h1>
         <Form>
           <Form.Group className="my-3">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label>Пошта</Form.Label>
             <Form.Control
               type="email"
-              placeholder="Enter your email address"
+              placeholder="Введіть вашу електрону пошту"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Group>
           <Form.Group className="my-3">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>Пароль</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Enter your password"
+              placeholder="Введіть пароль"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -42,10 +40,10 @@ const SignInPage: React.FC = () => {
             className="my-3"
             onClick={handleLoginClick}
           >
-            Sign In
+            Увійти
           </Button>
           <Button href="/signup" variant="primary" className="float-end my-3">
-            Sign Up
+            Зареєтруватись
           </Button>
         </Form>
       </Container>

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AuthorsServise, CoursesServise, CoursesVideosServise } from '../../services/server_conn';
-import { Button, Card, Col, Container, Nav, Tab } from 'react-bootstrap';
+import { Card, Col, Container } from 'react-bootstrap';
 import CourseVideoTab from './CourseVideoTab'; 
 import AuthServise from '../../components/ui/AuthServise';
 
@@ -70,7 +70,7 @@ const CourseSingle = () => {
     fetchData();
   }, [id]);
 
-  if (!course?.name) return <div style={{ width: '100%', textAlign: 'center' }}><h1>Loading....</h1></div>;
+  if (!course?.name) return <div style={{ width: '100%', textAlign: 'center' }}><h1>Загрузка....</h1></div>;
 
   if(user===null && course?.is_free == false){
      navigate('/', { replace: true });
