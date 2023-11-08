@@ -142,6 +142,19 @@ app.post('/login', (req, res) => {
                     res.status(500).json({ error: 'Password comparison error' });
                 } else if (passwordMatch) {
                     // Passwords match, create JWT token
+                    // Check if end_date is less than the current date
+                    const currentDate = new Date();
+                    const endDate = new Date(user.end_date);
+
+                    if (endDate < currentDate) {
+                        // If end_date is in the past, reset active_package_id and end_date to null
+                        db.query('UPDATE users SET active_package_id = NULL, end_date = NULL WHERE id = ?', [user.id], (updateErr) => {
+                            if (updateErr) {
+                                console.error(updateErr);
+                                res.status(500).json({ error: 'Database error' });
+                            }
+                        });
+                    }
 
                     // Include active_package_id in the JWT payload
                     const payload = {
