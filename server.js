@@ -337,7 +337,7 @@ app.post('/createCourse', async (req, res) => {
     }
 
     // Check if the course name already exists
-    const [existingCourse] = await db.query('SELECT * FROM courses WHERE name = ?', [course.name]);
+    const existingCourse = await db.query('SELECT * FROM courses WHERE name = ?', [course.name]);
     if (existingCourse.length > 0) {
         return res.status(400).json({ error: "Course name already exists" });
     }
