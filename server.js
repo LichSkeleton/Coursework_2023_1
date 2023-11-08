@@ -1,8 +1,14 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 const app = express();
+app.use(bodyParser.json());
+// Secret key for JWT (replace with your own secret key)
+const secretKey = 'abcr';
 app.use(cors());
 app.use(express.json()); // Parse JSON request bodies
 
@@ -23,6 +29,162 @@ db.connect((err) => {
 
 app.get('/', (req, res) => {
     return res.json("BACKEND HI)");
+});
+
+app.post('/register', (req, res) => {
+    const { fullname, email, password } = req.body;
+
+    if (!fullname || !email || !password) {
+        // Check if any required fields are missing
+        res.status(400).json({ error: 'Please provide fullname, email, and password' });
+        return;
+    }
+
+    // Check if the email is already in use
+    const checkEmailQuery = 'SELECT * FROM users WHERE email = ?';
+    db.query(checkEmailQuery, [email], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database error' });
+        } else if (results.length > 0) {
+            // Email is already in use
+            res.status(400).json({ error: 'Email is already in use' });
+        } else {
+            // Hash the password before storing it in the database
+            bcrypt.hash(password, 10, (hashErr, hashedPassword) => {
+                if (hashErr) {
+                    console.error(hashErr);
+                    res.status(500).json({ error: 'Password hashing error' });
+                } else {
+                    // Insert the new user into the database
+                    const insertUserQuery = 'INSERT INTO users (fullname, email, password) VALUES (?, ?, ?)';
+                    db.query(insertUserQuery, [fullname, email, hashedPassword], (insertErr) => {
+                        if (insertErr) {
+                            console.error(insertErr);
+                            res.status(500).json({ error: 'Database error' });
+                        } else {
+                            res.status(200).json({ message: 'Registration successful' });
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+app.post('/purchase-package', async (req, res) => {
+    try {
+        // Extract the email and id_package from the request body
+        const { email, id_package } = req.body;
+
+        // Retrieve the package details including months_available
+        const getPackageQuery = 'SELECT id, months_available FROM packages WHERE id = ?';
+        db.query(getPackageQuery, [id_package], (error, packageResults) => {
+            if (error) {
+                return error;
+            }
+
+            if (packageResults.length === 0) {
+                res.status(404).json({ message: 'Package not found' });
+                return;
+            }
+
+            const package = packageResults[0];
+
+            // Calculate the end_date by adding months_available to the current date
+            const currentDate = new Date();
+            currentDate.setMonth(currentDate.getMonth() + package.months_available);
+
+            // Update the user's active_package_id and end_date
+            const updateUserQuery = 'UPDATE users SET active_package_id = ?, end_date = ? WHERE email = ?';
+            db.query(updateUserQuery, [id_package, currentDate, email], (updateError) => {
+                if (updateError) {
+                    throw updateError;
+                }
+
+                // Generate a new JWT token with the updated claims
+                const payload = {
+                    email: email,
+                    active_package_id: id_package, // Include active_package_id in the JWT payload
+                };
+
+                const newAccessToken = jwt.sign(payload, secretKey, { expiresIn: '40m' });
+
+                // Send the new JWT token as a response
+                res.status(200).json({
+                    message: 'Package purchased successfully',
+                    accessToken: newAccessToken,
+                });
+            });
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error purchasing package' });
+    }
+});
+
+
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    // Query the database to check if there is a user with the provided email
+    db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+        if (err) {
+            // Handle database error
+            console.error(err);
+            res.status(500).json({ error: 'Database error' });
+        } else if (results.length > 0) {
+            const user = results[0]; // Assuming the query returns a single user
+
+            // Use bcrypt to compare the provided password with the hashed password in the database
+            bcrypt.compare(password, user.password, (bcryptErr, passwordMatch) => {
+                if (bcryptErr) {
+                    console.error(bcryptErr);
+                    res.status(500).json({ error: 'Password comparison error' });
+                } else if (passwordMatch) {
+                    // Passwords match, create JWT token
+
+                    // Include active_package_id in the JWT payload
+                    const payload = {
+                        email: user.email,
+                        role: user.admin,
+                        active_package_id: user.active_package_id, // Add this line
+                    };
+
+                    // Create a JWT token with the payload
+                    const accessToken = jwt.sign(payload, secretKey, { expiresIn: '40m' });
+
+                    // Return the token to the client
+                    res.json({ accessToken });
+                } else {
+                    // Authentication failed
+                    res.status(401).json({ error: 'Authentication failed' });
+                }
+            });
+        } else {
+            // User not found
+            res.status(401).json({ error: 'User not found' });
+        }
+    });
+});
+
+
+
+app.get('/users', (req, res) => {
+    const { email } = req.query; // Get the 'email' query parameter
+
+    if (email) {
+        // Use a parameterized query to avoid SQL injection
+        const sql = 'SELECT * FROM users WHERE email = ?';
+        db.query(sql, [email], (err, data) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: "Internal server error" });
+            }
+            return res.json(data);
+        });
+    } else {
+        return res.status(400).json({ error: "Email parameter is required" });
+    }
 });
 
 app.get('/courses', (req, res) => {
