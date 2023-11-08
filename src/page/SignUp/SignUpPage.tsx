@@ -16,12 +16,18 @@ const SignUpPage: React.FC = () => {
                 },
                 body: JSON.stringify({ fullname, email, password }),
             });
-
+    
             if (response.ok) {
                 // Registration successful, now log in the user
                 await handleLogin(email, password); // Call the login function immediately after registration
             } else {
-                alert('Registration failed. Please check your details and try again.');
+                const data = await response.json();
+    
+                if (data.error === 'Email is already in use') {
+                    alert('User with that email already exists. Please log in or use a different email.');
+                } else {
+                    alert('Registration failed. Please check your details and try again.');
+                }
                 console.error('Registration failed');
             }
         } catch (error) {

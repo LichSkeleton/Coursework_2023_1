@@ -4,16 +4,9 @@ import AuthServise from '../../components/ui/AuthServise';
 import { UsersServise } from '../../services/server_conn';
 import { handleLogin } from '../SignCommon/Login';
 
-interface User{
-  email: string;
-  password: string;
-  admin: boolean;
-}
-
 const SignInPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState<User>();
 
   // After receiving the token in the response
   const handleLoginClick = () => {
