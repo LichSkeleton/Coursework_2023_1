@@ -155,6 +155,18 @@ app.post('/login', (req, res) => {
                             }
                         });
                     }
+                    
+                    if(user.end_date && !user.active_package_id){
+                        db.query('UPDATE users SET end_date = NULL WHERE id = ?', [user.id], (updateErr) => {
+                            if (updateErr) {
+                                console.error(updateErr);
+                                res.status(500).json({ error: 'Database error' });
+                            }
+                        });
+                    }
+                    if(user.admin){
+                        user.active_package_id = 1;
+                    }
 
                     // Include active_package_id in the JWT payload
                     const payload = {
@@ -317,12 +329,20 @@ app.get('/courses_categories', (req, res) => {
     })
 })
 
-app.post('/createCourse', (req, res) => {
+app.post('/createCourse', async (req, res) => {
     const { course, courseVideos } = req.body;
 
     if (!course || !courseVideos) {
         return res.status(400).json({ error: "Missing course or courseVideos data" });
     }
+
+    // Check if the course name already exists
+    const [existingCourse] = await db.query('SELECT * FROM courses WHERE name = ?', [course.name]);
+    if (existingCourse.length > 0) {
+        return res.status(400).json({ error: "Course name already exists" });
+    }
+
+    // Continue with course creation if the name is unique
     db.query('INSERT INTO courses (author_id, name, description, icon_url, resource_url, is_free) VALUES (?, ?, ?, ?, ?, ?)', [course.author_id, course.name, course.description, course.icon_url, course.resource_url, course.is_free], (err, result) => {
         if (err) {
             console.error(err);
@@ -348,8 +368,8 @@ app.post('/createCourse', (req, res) => {
             return res.status(200).json({ message: "Course and Course Videos created successfully" });
         });
     });
-
 });
+
 
 app.get('/getLastCourseId', (req, res) => {
     // Query the database to get the last course ID
