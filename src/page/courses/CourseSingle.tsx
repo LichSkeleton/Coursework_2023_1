@@ -78,11 +78,11 @@ const CourseSingle = () => {
 
   return (
     <Container className='border p-3'>
-      <div className="d-flex flex-row align-items-center justify-content-center m-5">
-        <Col xs={6} className="d-flex justify-content-center align-items-center">
+      <div className="d-flex flex-row align-items-center justify-content-center m-5 row">
+        <Col md={12} lg={6} className="d-flex justify-content-center align-items-center">
           <Card.Img src={course?.icon_url} alt={course?.name} style={{ height: '300px', width: '500px' }} />
         </Col>
-        <Col xs={6} className="d-flex flex-column justify-content-center align-items-center">
+        <Col md={12} lg={6} className="d-flex flex-column justify-content-center align-items-center">
           <h2 className='float-center'>Автор:</h2>
           <div style={{
             backgroundImage: `url(${author?.photo_url})`,

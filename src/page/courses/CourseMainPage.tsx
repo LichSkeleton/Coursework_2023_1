@@ -104,8 +104,8 @@ const CoursePage = () => {
                 const authorFullname = getAuthorFullname(course.author_id);
 
                 return (
-                  <Col key={course.id} className="col-md-12 col-lg-6 col-xl-3 h-100">
-                    <Card style={{ height: '100%' }}>
+                  <Col key={course.id} className="col-md-12 col-lg-6 col-xl-3 m-3">
+                    <Card className='h-100'>
                       <CardImg src={course.icon_url} alt={course.name} className="img-fluid" style={{ width: '100%', height: '200px' }} />
                       <CardBody>
                         <CardTitle>{course.name}</CardTitle>
