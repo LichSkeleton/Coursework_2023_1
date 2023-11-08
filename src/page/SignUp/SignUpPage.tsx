@@ -8,6 +8,10 @@ const SignUpPage: React.FC = () => {
     const [password, setPassword] = useState('');
 
     const handleRegistration = async () => {
+        if(!fullname && !email && !password){
+            alert('Заповніть всі поля для рейстрації');
+            return;
+        }
         try {
             const response = await fetch('http://localhost:8081/register', {
                 method: 'POST',

@@ -8,7 +8,11 @@ const SignInPage: React.FC = () => {
 
   // After receiving the token in the response
   const handleLoginClick = () => {
+    if(email && password){
     handleLogin(email, password);
+    }else{
+      alert('Заповніть будь ласка поля для входу');
+    }
   };
 
   return (
