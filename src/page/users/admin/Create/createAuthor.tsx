@@ -3,6 +3,7 @@ import { Form, Button, Col } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthorsServise, CategoriesServise } from '../../../../services/server_conn';
 import axios from 'axios';
+import useTokenCheck from '../../../../components/ui/ProtectedRoute';
 
 interface Author {
     fullname: string;
@@ -10,6 +11,7 @@ interface Author {
 }
 
 const CreateAuthor: React.FC = () => {
+    useTokenCheck();
     const navigate = useNavigate();
 
     const [author, setAuthor] = useState<Author>({

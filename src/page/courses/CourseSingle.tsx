@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AuthorsServise, CoursesServise, CoursesVideosServise } from '../../services/server_conn';
 import { Button, Card, Col, Container, Nav, Tab } from 'react-bootstrap';
 import CourseVideoTab from './CourseVideoTab'; 
+import AuthServise from '../../components/ui/AuthServise';
 
 interface Course {
   id: number;
@@ -33,6 +34,19 @@ const CourseSingle = () => {
   const [course, setCourses] = useState<Course>();
   const [author, setAuthor] = useState<Author>();
   const [courseVideos, setCourseVideos] = useState<CourseVideos[]>([]);
+  const [user,setUser] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setUser(AuthServise.getActivePackage(AuthServise.getJwtToken()));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (!id) return;
@@ -47,6 +61,7 @@ const CourseSingle = () => {
 
         const dataCourseVideos = await CoursesVideosServise.getAllById(id);
         setCourseVideos(dataCourseVideos);
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -56,13 +71,16 @@ const CourseSingle = () => {
   }, [id]);
 
   if (!course?.name) return <div style={{ width: '100%', textAlign: 'center' }}><h1>Loading....</h1></div>;
-  if (course?.is_free == false) navigate('/', { replace: true });
+
+  if(user===null && course?.is_free == false){
+     navigate('/', { replace: true });
+  };
 
   return (
     <Container className='border p-3'>
       <div className="d-flex flex-row align-items-center justify-content-center m-5">
         <Col xs={6} className="d-flex justify-content-center align-items-center">
-          <Card.Img src={course.icon_url} alt={course.name} style={{ height: '300px', width: '500px' }} />
+          <Card.Img src={course?.icon_url} alt={course?.name} style={{ height: '300px', width: '500px' }} />
         </Col>
         <Col xs={6} className="d-flex flex-column justify-content-center align-items-center">
           <h2 className='float-center'>Автор:</h2>
@@ -79,10 +97,10 @@ const CourseSingle = () => {
       </div>
       <Card>
         <Card.Body>
-          <Card.Title>{course.name}</Card.Title>
-          <Card.Text>{course.description}</Card.Text>
+          <Card.Title>{course?.name}</Card.Title>
+          <Card.Text>{course?.description}</Card.Text>
           <CourseVideoTab courseVideos={courseVideos || []} />
-          <a href={course.resource_url} className='btn btn-primary text-end' target="_blank">Download Files</a>
+          <a href={course?.resource_url} className='btn btn-primary text-end' target="_blank">Download Files</a>
         </Card.Body>
       </Card>
     </Container >

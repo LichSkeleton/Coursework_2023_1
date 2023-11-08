@@ -3,6 +3,7 @@ import { Form, Button, Col } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthorsServise, CategoriesServise } from '../../../../services/server_conn';
 import axios from 'axios';
+import useTokenCheck from '../../../../components/ui/ProtectedRoute';
 
 interface Package {
     name: string;
@@ -11,6 +12,7 @@ interface Package {
 }
 
 const CreatePackage: React.FC = () => {
+    useTokenCheck();
     const navigate = useNavigate();
 
     const [mypackage, setMyPackage] = useState<Package>({

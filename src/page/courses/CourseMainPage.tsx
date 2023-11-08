@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, CardBody, CardImg, CardText, CardTitle, Col, Container, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
-import { AuthorsServise, CategoriesServise, CoursesCategoriesServise, CoursesServise } from '../../services/server_conn';
+import { AuthorsServise, CategoriesServise, CoursesCategoriesServise, CoursesServise, UsersServise } from '../../services/server_conn';
 import { Link, Route, useNavigate } from 'react-router-dom';
 import CourseSingle from './CourseSingle';
+import AuthServise from '../../components/ui/AuthServise';
 
 interface Course {
   id: number;
@@ -31,21 +32,12 @@ interface CourseCategory {
 
 const CoursePage = () => {
 
-  // const handleCourseClick = (course: Course) => {
-  //   <Route path="/course/:id" element={<CourseSingle course={course} />} />
-  // };
-  const navigate = useNavigate();
-
-  const handleCourseClick = (course: Course) => {
-    navigate(`/course/${course.id}`);
-    // <Route path="/course/:id" element={<CourseSingle course={course} />} />
-  };
-
   const [courses, setCourses] = useState<Course[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [courseCategories, setCourseCategories] = useState<CourseCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [user,setUser] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +50,8 @@ const CoursePage = () => {
         setCategories(categoriesResponse);
         const courseCategoriesResponse = await CoursesCategoriesServise.getAll();
         setCourseCategories(courseCategoriesResponse);
+        setUser(AuthServise.getActivePackage(AuthServise.getJwtToken()));
+        // console.log(AuthServise.getActivePackage(AuthServise.getJwtToken()));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -65,6 +59,7 @@ const CoursePage = () => {
 
     fetchData();
   }, []);
+
   const getAuthorFullname = (authorId: number) => {
     const author = authors.find((author) => author.id === authorId);
     return author?.fullname;
@@ -79,23 +74,31 @@ const CoursePage = () => {
     if (courses.length === 0) {
       return <p>No courses available.</p>;
     }
+
     const freeCourses = courses.filter((course) => course.is_free);
-    let filteredCourses: Course[] = freeCourses;
+    // let filteredCourses: Course[];
+    // if(user!==null){
+    //   filteredCourses = courses;
+    // }else{
+    //   filteredCourses=freeCourses;
+    // }
+    let filteredCourses: Course[] = user ? courses : freeCourses;
+    
     if (selectedCategory) {
       // Filter courseCategories based on the selected category
       const filteredCourseCategories = courseCategories.filter((courseCategory) => courseCategory.category_id === selectedCategory);
       // Extract the course_ids from the filteredCourseCategories
       const selectedCourseIds = filteredCourseCategories.map((courseCategory) => courseCategory.course_id);
       // Filter courses to only include those with ids in selectedCourseIds
-      filteredCourses = freeCourses.filter((course) => selectedCourseIds.includes(course.id));
+      filteredCourses = filteredCourses.filter((course) => selectedCourseIds.includes(course.id));
     }
-
+    
     if (filteredCourses.length === 0) {
       return <div className='d-flex flex-grow-1 justify-content-center m-5'><div className="row mb-6 justify-content-center m-5"><h1 className='m-5'>No courses available for the selected category.</h1></div></div>
     }
-
+    
     const renderedCourses = [];
-
+    
     for (let i = 0; i < filteredCourses.length; i += 3) {
       renderedCourses.push(filteredCourses.slice(i, i + 3));
     }

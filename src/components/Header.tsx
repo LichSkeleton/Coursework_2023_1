@@ -1,8 +1,22 @@
-import React, { Component } from 'react';
-import { Container, Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
+import React from 'react';
+import { Container, Nav, Navbar } from 'react-bootstrap';
 import logo from './logo.png';
+import AuthService from './ui/AuthServise';
+import useTokenCheck from './ui/ProtectedRoute';
+import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
+  const jwtToken = AuthService.getJwtToken();
+  const isAdmin = jwtToken && AuthService.getJwtTokenRole(jwtToken);
+
+  const handleLogout = () => {
+    AuthService.logout();
+    navigate("/");
+    window.location.reload();
+  };
+
+
   return (
     <>
       <Navbar className='d-flex flex-column flex-grow-0' collapseOnSelect expand="md" bg="dark" variant="dark">
@@ -20,9 +34,20 @@ const Header: React.FC = () => {
             <Nav className='mr-auto'>
               <Nav.Link href='/'>Home</Nav.Link>
               <Nav.Link href='/about'>About us</Nav.Link>
+              {jwtToken && (
+                isAdmin ? (
+                  <Nav.Link href='/admin'>Admin Panel</Nav.Link>
+                ) : (
+                  <Nav.Link href='/dashboard'>Dashboard</Nav.Link>
+                )
+              )}
             </Nav>
             <Nav className='ms-auto'>
-              <Nav.Link href='/signin' className="justify-content-end">Sign In</Nav.Link>
+              {jwtToken ? (
+                <Nav.Link onClick={handleLogout}>Sign Out</Nav.Link>
+              ) : (
+                <Nav.Link href='/signin'>Sign In</Nav.Link>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

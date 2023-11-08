@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button, Col, Container, Nav, Row, Tab, TabContent } from 'react-bootstrap';
 import { AuthorsServise, CategoriesServise, CoursesServise, PackagesServise } from '../../services/server_conn';
 import axios from 'axios';
+import useTokenCheck from '../../components/ui/ProtectedRoute';
 
 interface Course {
     id: number;
@@ -34,6 +35,7 @@ interface Category {
 }
 
 const MainAdmins: React.FC = () => {
+    useTokenCheck();
 
     const [courses, setCourses] = useState<Course[]>([]);
     const [authors, setAuthors] = useState<Author[]>([]);

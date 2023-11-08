@@ -3,6 +3,7 @@ import { Form, Button, Col } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthorsServise, CategoriesServise } from '../../../../services/server_conn';
 import axios from 'axios';
+import useTokenCheck from '../../../../components/ui/ProtectedRoute';
 
 interface Course {
     author_id: number;
@@ -30,6 +31,7 @@ interface CourseVideo {
 }
 
 const CreateCourse: React.FC = () => {
+    useTokenCheck();
     const navigate = useNavigate();
 
     const [course, setCourse] = useState<Course>({

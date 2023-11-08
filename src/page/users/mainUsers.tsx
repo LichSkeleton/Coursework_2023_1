@@ -1,44 +1,114 @@
 import React, { useState, useEffect } from 'react';
-import { PackagesServise } from '../../services/server_conn';
-import { Col, Container, Nav, Row, Tab, TabContent } from 'react-bootstrap';
+import { PackagesServise, UsersServise } from '../../services/server_conn';
+import { Button, Col, Container, Nav, Row, Tab, TabContent } from 'react-bootstrap';
+import AuthService from '../../components/ui/AuthServise'
+import { useNavigate } from 'react-router-dom';
+import useTokenCheck from '../../components/ui/ProtectedRoute';
 
-type Package = {
+interface Package {
     id: number;
     name: string;
     price: number;
-    monthsAvailable: number;
+    months_available: number;
 };
 
-interface PackageState {
-    packages: Package[];
-    activeTab: string;
-}
-
 const MainUsers: React.FC = () => {
+    useTokenCheck();
+
+    // State to store the list of packages
+    const [packages, setPackages] = useState<Package[]>([]);
+    // State to track the active package and end date for the current user
+    const [activePackageName, setActivePackageName] = useState<string | null>(null);
+    const [activePackageId, setActivePackageId] = useState<number | null>(null);
+    const [endDate, setEndDate] = useState<string | null>(null);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const email = AuthService.getEmail(AuthService.getJwtToken());
+
+                // Fetch user's data
+                const userData = await UsersServise.getByEmail(email);
+                // setUser(userData);
+
+                const user = userData[0];
+                // console.log(userData);
+                if (user .active_package_id !==null) {
+                    // console.log(user);
+                    const packageResponse = await PackagesServise.getById(user.active_package_id);
+                    setActivePackageName(packageResponse.name);
+                    setActivePackageId(user.active_package_id);
+                    setEndDate(user.end_date);
+                } else {
+                    // Fetch packages
+                    const response = await PackagesServise.getAll();
+                    setPackages(response);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
+    }, []);
+    
+    // Function to handle package purchase
+    const handlePurchase = async (packageId: number) => {
+        try {
+            const response = await UsersServise.postPackageUser(AuthService.getEmail(AuthService.getJwtToken()), packageId);
+            console.log(response);
+            const newJwtToken = response.accessToken;
+
+            AuthService.logout();
+            AuthService.login(newJwtToken);
+
+            // Reload the page or update the state as needed
+            window.location.reload();
+        } catch (error: any) { 
+            console.error('Error:', error);
+        }
+    };
+
+    // console.log(packages);
 
     return (
-        <>
-        <Container>
+        <div className="w-100">
             <Tab.Container id="left-tabs-example" defaultActiveKey="navPackages">
-                <Row style={{minHeight: "400px"}}>
-                    <Col sm={3}>
+                <Row style={{ minHeight: "400px" }}>
+                    <Col sm={2}>
                         <Nav variant="pills" className="flex-column mt-2">
                             <Nav.Item>
                                 <Nav.Link eventKey="navPackages">Packages</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Col>
-                    <Col sm="9">
+                    <Col sm={10}>
                         <TabContent>
                             <Tab.Pane eventKey="navPackages">
-                                
+                                {activePackageId !== null ? (
+                                    <div className='mt-3'>
+                                        <h4>"{activePackageName}" пакет</h4>
+                                        {endDate ? (
+                                            <p>Active until: {new Date(endDate).toLocaleDateString()}</p>
+                                        ) : null}
+                                    </div>
+                                ) : (
+                                    packages.map((mypackage) => (
+                                        <div key={mypackage.id}>
+                                            <h4>{mypackage.name}</h4>
+                                            <p>Price: {mypackage.price} грн</p>
+                                            <p>Months Available: {mypackage.months_available} months</p>
+                                            <Button onClick={() => handlePurchase(mypackage.id)}>Buy</Button>
+                                            <hr />
+                                        </div>
+                                    ))
+                                )}
                             </Tab.Pane>
                         </TabContent>
                     </Col>
                 </Row>
             </Tab.Container>
-        </Container>
-        </>
+        </div>
     );
 };
 

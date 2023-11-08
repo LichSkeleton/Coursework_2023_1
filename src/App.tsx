@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Router from './components/ui/Router';
-// import './App.css';
+import { BrowserRouter as Router } from 'react-router-dom';
+import RouterComponent from './components/ui/Router';
 
 function App() {
   return (
-    <div className="d-flex flex-column">
+    <Router>
+      <div className="d-flex flex-column">
         <Header />
-        <Router />
+        <RouterComponent />
         <Footer />
-    </div>
+      </div>
+    </Router>
   );
 }
 
